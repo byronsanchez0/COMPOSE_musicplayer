@@ -8,10 +8,47 @@
     android:gravity="center"
     tools:context=".MainActivity">
 
+    <ImageView
+        android:id="@+id/albumPic"
+        android:layout_width="wrap_content"
+        android:layout_height="250dp"
+        android:layout_marginVertical="10dp"
+        android:src="@drawable/rhapsody"
+        />
+
     <TextView
+        android:id="@+id/songTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="Music Title"
         />
+    <SeekBar
+        android:id="@+id/seekbar"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:progress="50"/>
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <ImageButton
+            android:id="@+id/previousbtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/previousbtn"/>
+        <ImageButton
+            android:id="@+id/playbtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/playbtn"/>
+        <ImageButton
+            android:id="@+id/nextbtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/nextbtn"/>
+
+
+    </LinearLayout>
 
 </LinearLayout>
