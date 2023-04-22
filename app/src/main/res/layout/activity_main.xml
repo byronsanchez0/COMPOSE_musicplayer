@@ -6,14 +6,18 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
 
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@color/darkblack">
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:layout_marginHorizontal="12dp"
+        android:paddingVertical="10dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+
         />
 
 

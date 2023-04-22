@@ -4,4 +4,5 @@ import android.media.MediaPlayer
 
 object Player {
     var mediaPlayer : MediaPlayer? = null
+    var currentSongs = arrayListOf<Song>()
 }

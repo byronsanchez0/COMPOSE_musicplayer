@@ -26,22 +26,21 @@ class MusicPlayer : AppCompatActivity() {
         val seekBar = binding.seekbar
         val songName = intent.getStringExtra("songName")
         val songAlbum = intent.getIntExtra("songAlbum", 0)
-        val mediaSong = intent.getIntExtra("songId", 0)
+        var songId = intent.getIntExtra("songId", 0)
 //        player = MediaPlayer.create(this, mediaSong)
         Player.mediaPlayer?.release()
-        Player.mediaPlayer = MediaPlayer.create(this, mediaSong)
-        Player.mediaPlayer?.apply {
-            setOnPreparedListener {
-                start()
-                binding.playbtn.setImageResource(R.drawable.pausebtn)
-                binding.playbtn.setOnClickListener {
-                    if (!isPlaying) {
-                        start()
-                        binding.playbtn.setImageResource(R.drawable.pausebtn)
-                    } else {
-                        pause()
-                        binding.playbtn.setImageResource(R.drawable.playbtn)
-                    }
+        Player.mediaPlayer = MediaPlayer.create(this, songId)
+        Player.mediaPlayer?.start()
+        binding.playbtn.setImageResource(R.drawable.pausebtn)
+
+        binding.playbtn.setOnClickListener {
+            Player.mediaPlayer?.apply {
+                if (!isPlaying) {
+                    start()
+                    binding.playbtn.setImageResource(R.drawable.pausebtn)
+                } else {
+                    pause()
+                    binding.playbtn.setImageResource(R.drawable.playbtn)
                 }
             }
         }
@@ -49,6 +48,58 @@ class MusicPlayer : AppCompatActivity() {
         seekBar.max = Player.mediaPlayer?.duration!!
 
 
+        binding.nextbtn.setOnClickListener {
+            var nextSongId = 0
+            var nextName = ""
+            var nextAlbum = 0
+            val currentSongs = Player.currentSongs
+            currentSongs.forEachIndexed { i, song ->
+                if (songId == song.id) {
+                    var nextIndex = i + 1
+                    if (nextIndex > currentSongs.size - 1) {
+                        nextIndex = 0
+                    }
+                    nextSongId = currentSongs[nextIndex].id
+                    nextName = currentSongs[nextIndex].songTitle
+                    nextAlbum = currentSongs[nextIndex].album
+                }
+            }
+            songId = nextSongId
+            if (Player.mediaPlayer?.isPlaying == true) {
+                Player.mediaPlayer?.stop()
+            }
+            Player.mediaPlayer?.reset()
+            Player.mediaPlayer = MediaPlayer.create(this, nextSongId)
+            Player.mediaPlayer?.start()
+            musicTitle.text = nextName
+            albumPic.setImageResource(nextAlbum)
+        }
+        binding.previousbtn.setOnClickListener {
+            var nextSongId = 0
+            var nextName = ""
+            var nextAlbum = 0
+            val currentSongs = Player.currentSongs
+            currentSongs.forEachIndexed { i, song ->
+                if (songId == song.id) {
+                    var nextIndex = i - 1
+                    if (nextIndex < 0) {
+                        nextIndex = Player.currentSongs.size - 1
+                    }
+                    nextSongId = currentSongs[nextIndex].id
+                    nextName = currentSongs[nextIndex].songTitle
+                    nextAlbum = currentSongs[nextIndex].album
+                }
+            }
+            songId = nextSongId
+            if (Player.mediaPlayer?.isPlaying == true) {
+                Player.mediaPlayer?.stop()
+            }
+            Player.mediaPlayer?.reset()
+            Player.mediaPlayer = MediaPlayer.create(this, nextSongId)
+            Player.mediaPlayer?.start()
+            musicTitle.text = nextName
+            albumPic.setImageResource(nextAlbum)
+        }
 
         songBtn.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
@@ -73,7 +124,6 @@ class MusicPlayer : AppCompatActivity() {
 //                }
 //            }
 //        }
-        println(mediaSong)
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, change: Boolean) {
