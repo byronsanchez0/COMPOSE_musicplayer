@@ -92,13 +92,13 @@ class MusicPlayer : AppCompatActivity() {
                         nextAlbum = currentSongs[nextIndex].album
                     }
                     ManageSong.Previous -> {
-                        var nextIndex = i - 1
-                        if (nextIndex < 0) {
-                            nextIndex = Player.currentSongs.size - 1
+                        var previousIndex = i - 1
+                        if (previousIndex < 0) {
+                            previousIndex = Player.currentSongs.size - 1
                         }
-                        nextSongId = currentSongs[nextIndex].id
-                        nextName = currentSongs[nextIndex].songTitle
-                        nextAlbum = currentSongs[nextIndex].album
+                        nextSongId = currentSongs[previousIndex].id
+                        nextName = currentSongs[previousIndex].songTitle
+                        nextAlbum = currentSongs[previousIndex].album
                     }
                 }
 
