@@ -13,8 +13,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        Player.currentSongs = repo.allSongs
-        binding.recycler.adapter = SongsAdapter(repo.allSongs)
+//        Player.currentSongs = repo.allSongs
+//        binding.recycler.adapter = SongsAdapter(repo.allSongs)
     }
 
 
