@@ -4,17 +4,32 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.musicplayer.databinding.ItemSongBinding
 import com.example.musicplayer.models.Player
 import com.example.musicplayer.models.Song
 
+@Suppress("DEPRECATION")
+
 class SongsAdapter(
-    private val list: List<Song>
+    private val list: List<Song>,
+    private val onSongClickListener: (Int) -> Unit
 ) : RecyclerView.Adapter<SongsAdapter.SongViewHolder>() {
 
-    class SongViewHolder(binding: ItemSongBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class SongViewHolder(binding: ItemSongBinding) : RecyclerView.ViewHolder(binding.root) {
+        val title : TextView = binding.songTitle
+        val image : ImageView = binding.albumImg
         val view = binding
+
+        init{
+            binding.root.setOnClickListener{
+                onSongClickListener(adapterPosition)
+            }
+        }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
@@ -28,18 +43,8 @@ class SongsAdapter(
     }
 
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
-        holder.view.songTitle.text = list[position].songTitle
-        holder.view.playbtn.setOnClickListener {
-            val intent = Intent(it.context, MusicPlayer::class.java)
-
-            Player.currentName = list[position].songTitle
-            Player.currentId = list[position].id
-            Player.currentAlbum = list[position].album
-
-            Player.mediaPlayer?.release()
-            Player.mediaPlayer = MediaPlayer.create(it.context, list[position].id)
-            Player.mediaPlayer?.start()
-            it.context.startActivity(intent)
+        val song = list[position]
+        holder.title.text = song.songTitle
+        Glide.with(holder.image.context).load(song.album).into(holder.image)
         }
-    }
 }

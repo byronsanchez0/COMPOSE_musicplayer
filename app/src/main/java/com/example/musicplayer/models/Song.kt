@@ -1,5 +1,5 @@
 package com.example.musicplayer.models
 
-import java.io.Serializable
+import android.net.Uri
 
-data class Song(val songTitle: String, val id: Int, val album: Int)
+data class Song(val songTitle: String, val id: Uri, val album: Uri)

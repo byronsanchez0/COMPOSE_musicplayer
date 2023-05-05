@@ -1,38 +1,35 @@
 package com.example.musicplayer
 
 import android.content.ContentProvider
+import android.content.ContentUris
 import android.content.ContentValues
 import android.database.Cursor
 import android.database.MatrixCursor
 import android.net.Uri
 import com.example.musicplayer.models.Song
-import com.example.musicplayer.repository.SongsRepo
-import com.example.musicplayer.repository.SongsRepo.Companion.track1
-import com.example.musicplayer.repository.SongsRepo.Companion.track2
-import com.example.musicplayer.repository.SongsRepo.Companion.track3
 
 class songsProvider : ContentProvider() {
     private val _deletedSongs = mutableSetOf<String>()
-    private val songs = mutableListOf(
+    private val _songs = mutableListOf(
         Song(
-            track1,
-            R.raw.rhapsodydawnoffire,
-            R.drawable.rhapsody
+            SONG_NAME_ONE,
+            Uri.parse("${URI_PATH}${R.raw.rhapsodydawnoffire}"),
+            Uri.parse("${URI_PATH}${R.drawable.rhapsody}")
         ),
         Song(
-            track2,
-            R.raw.rufusdesolinnerbloom,
-            R.drawable.inerbloom
+            SONG_NAME_TWO,
+            Uri.parse("${URI_PATH}${R.raw.rufusdesolinnerbloom}"),
+            Uri.parse("${URI_PATH}${R.drawable.inerbloom}")
         ),
         Song(
-            track3,
-            R.raw.unatroca,
-            R.drawable.exterminador
+            SONG_NAME_THREE,
+            Uri.parse("${URI_PATH}${R.raw.unatroca}"),
+            Uri.parse("${URI_PATH}${R.drawable.exterminador}")
         )
     )
 
-    val _songs: List<Song>
-        get() = songs.toList()
+    val songs: List<Song>
+        get() = _songs.toList()
 
     override fun onCreate(): Boolean {
         return true
@@ -69,11 +66,17 @@ class songsProvider : ContentProvider() {
         if (values == null){
             throw IllegalArgumentException("ContentValues cannot be null")
         }
-        val title = values.getAsShort()
+        val title = values.getAsString(SONG_NAME)
+        val songUri = Uri.parse(values.getAsString(SONG_URI))
+        val albumArtUri = Uri.parse(values.getAsString(ALBUM_ART_URI))
+
+        val song = Song(title, songUri, albumArtUri)
+        _songs.add(song)
+        return ContentUris.withAppendedId(uri, (_songs.size - 1).toLong())
     }
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int {
-        TODO("Not yet implemented")
+        throw UnsupportedOperationException("Not supported. Read-only provider.")
     }
 
     override fun update(
@@ -82,14 +85,14 @@ class songsProvider : ContentProvider() {
         selection: String?,
         selectionArgs: Array<out String>?
     ): Int {
-        TODO("Not yet implemented")
+        throw UnsupportedOperationException("Not supported. Read-only provider.")
     }
 
     companion object {
         const val SONG_NAME_ONE: String = "Bar Liar"
         const val SONG_NAME_TWO: String = "Girls Like You"
         const val SONG_NAME_THREE: String = "See You Again"
-        private const val AUTHORITY = "com.example.music_player_mvvm.provider"
+        private const val AUTHORITY = "com.example.musicplayer.provider"
         const val URI_PATH = "android.resource://com.example.musicplayer/"
         const val ID = "_id"
         const val SONG_NAME = "song_name"
