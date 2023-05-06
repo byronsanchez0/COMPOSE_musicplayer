@@ -22,7 +22,7 @@ class SongsAdapter(
     inner class SongViewHolder(binding: ItemSongBinding) : RecyclerView.ViewHolder(binding.root) {
         val title : TextView = binding.songTitle
         val image : ImageView = binding.albumImg
-        val view = binding
+//        val view = binding
 
         init{
             binding.root.setOnClickListener{
@@ -47,4 +47,9 @@ class SongsAdapter(
         holder.title.text = song.songTitle
         Glide.with(holder.image.context).load(song.album).into(holder.image)
         }
+
+
+
+
+
 }

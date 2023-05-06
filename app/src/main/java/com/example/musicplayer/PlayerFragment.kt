@@ -43,7 +43,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
         binding.seekbar.max = Player.mediaPlayer?.duration!!
 
         binding.playbtn.setOnClickListener {
-            play()
+//            play()
         }
 
         binding.nextbtn.setOnClickListener {
@@ -97,56 +97,56 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
         var nextAlbum = 0
         val currentSongs = Player.currentSongs
         currentSongs.forEachIndexed { i, song ->
-            if (Player.currentId == song.id) {
+//            if (Player.currentId == song.id) {
                 when (manageSong) {
                     ManageSong.Next -> {
                         var nextIndex = i + 1
                         if (nextIndex > currentSongs.size - 1) {
                             nextIndex = 0
                         }
-                        nextSongId = currentSongs[nextIndex].id
-                        nextName = currentSongs[nextIndex].songTitle
-                        nextAlbum = currentSongs[nextIndex].album
+//                        nextSongId = currentSongs[nextIndex].id
+//                        nextName = currentSongs[nextIndex].songTitle
+//                        nextAlbum = currentSongs[nextIndex].album
                     }
                     ManageSong.Previous -> {
                         var previousIndex = i - 1
                         if (previousIndex < 0) {
                             previousIndex = Player.currentSongs.size - 1
                         }
-                        nextSongId = currentSongs[previousIndex].id
-                        nextName = currentSongs[previousIndex].songTitle
-                        nextAlbum = currentSongs[previousIndex].album
+//                        nextSongId = currentSongs[previousIndex].id
+//                        nextName = currentSongs[previousIndex].songTitle
+//                        nextAlbum = currentSongs[previousIndex].album
                     }
                 }
 
             }
         }
-        Player.currentId = nextSongId
-        Player.currentName = nextName
-        Player.currentAlbum = nextAlbum
-        if (Player.mediaPlayer?.isPlaying == true) {
-            Player.mediaPlayer?.stop()
-        }
-        Player.mediaPlayer?.reset()
-        Player.mediaPlayer = MediaPlayer.create(requireContext(), nextSongId)
-        Player.mediaPlayer?.start()
-        binding.songTitle.text = nextName
-        binding.albumPic.setImageResource(nextAlbum)
-    }
+//        Player.currentId = nextSongId
+//        Player.currentName = nextName
+//        Player.currentAlbum = nextAlbum
+//        if (Player.mediaPlayer?.isPlaying == true) {
+//            Player.mediaPlayer?.stop()
+//        }
+//        Player.mediaPlayer?.reset()
+//        Player.mediaPlayer = MediaPlayer.create(requireContext(), nextSongId)
+//        Player.mediaPlayer?.start()
+//        binding.songTitle.text = nextName
+//        binding.albumPic.setImageResource(nextAlbum)
+//    }
 
-    private fun play() {
-        Player.mediaPlayer?.apply {
-            if (!isPlaying) {
-                start()
-                binding.playbtn.setImageResource(R.drawable.pausebtn)
-            } else {
-                pause()
-                binding.playbtn.setImageResource(R.drawable.playbtn)
-            }
-        }
-    }
+//    private fun play() {
+//        Player.mediaPlayer?.apply {
+//            if (!isPlaying) {
+//                start()
+//                binding.playbtn.setImageResource(R.drawable.pausebtn)
+//            } else {
+//                pause()
+//                binding.playbtn.setImageResource(R.drawable.playbtn)
+//            }
+//        }
+//    }
 
-    companion object {
-
-    }
+//    companion object {
+//
+//    }
 }

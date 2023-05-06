@@ -8,7 +8,7 @@ import android.database.MatrixCursor
 import android.net.Uri
 import com.example.musicplayer.models.Song
 
-class songsProvider : ContentProvider() {
+class SongsProvider : ContentProvider() {
     private val _deletedSongs = mutableSetOf<String>()
     private val _songs = mutableListOf(
         Song(
@@ -43,7 +43,7 @@ class songsProvider : ContentProvider() {
         sortOrder: String?
     ): Cursor? {
         var matrixCursor = MatrixCursor(arrayOf(ID, SONG_NAME, SONG_URI, ALBUM_ART_URI, ALBUM_ART_URI))
-        _songs.forEachIndexed{index, song ->
+        songs.forEachIndexed{index, song ->
             if(!_deletedSongs.contains(song.songTitle)){
                 matrixCursor.addRow(
                     arrayOf(
@@ -92,7 +92,7 @@ class songsProvider : ContentProvider() {
         const val SONG_NAME_ONE: String = "Bar Liar"
         const val SONG_NAME_TWO: String = "Girls Like You"
         const val SONG_NAME_THREE: String = "See You Again"
-        private const val AUTHORITY = "com.example.musicplayer.provider"
+        private const val AUTHORITY = "com.example.music-player.provider"
         const val URI_PATH = "android.resource://com.example.musicplayer/"
         const val ID = "_id"
         const val SONG_NAME = "song_name"
@@ -111,14 +111,14 @@ class songsProvider : ContentProvider() {
                 return emptyList()
             }
 
-            while (cursor.moveToNext()) {
-                val title = cursor.getString(nameColumnIndex)
-                val songUri = Uri.parse(cursor.getString(songUriColumnIndex))
-                val albumArtUri = Uri.parse(cursor.getString(albumArtUriColumnIndex))
-
-                val song = Song(title, songUri, albumArtUri)
-                songs.add(song)
-            }
+//            while (cursor.moveToNext()) {
+//                val title = cursor.getString(nameColumnIndex)
+//                val songUri = Uri.parse(cursor.getString(songUriColumnIndex))
+//                val albumArtUri = Uri.parse(cursor.getString(albumArtUriColumnIndex))
+//
+//                val song = Song(title, songUri, albumArtUri)
+//                songs.add(song)
+//            }
             return songs
         }
     }

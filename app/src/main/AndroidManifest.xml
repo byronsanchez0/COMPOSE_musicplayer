@@ -15,12 +15,12 @@
         android:theme="@style/Theme.MusicPlayer"
         tools:targetApi="31">
         <provider
-            android:name=".songsProvider"
-            android:authorities="com.example.music_player_mvvm.provider"
+            android:name=".SongsProvider"
+            android:authorities="com.example.musicplayer.provider"
             android:exported="false"/>
-        <activity
-            android:name=".MusicPlayer"
-            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".MusicPlayer"-->
+<!--            android:exported="false" />-->
         <activity
             android:name=".MainActivity"
             android:exported="true">
