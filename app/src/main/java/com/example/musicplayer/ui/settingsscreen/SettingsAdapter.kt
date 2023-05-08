@@ -1,4 +1,3 @@
-
 import android.content.ClipData.Item
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -16,13 +15,14 @@ class SettingsAdapter(
     private val onSongClickListener: (Song) -> Unit
 ) : RecyclerView.Adapter<SettingsAdapter.SongViewHolder>() {
 
-    inner class SongViewHolder(binding: ItemSongsettingsBinding) : RecyclerView.ViewHolder(binding.root) {
-        val title : TextView = binding.songTitle
-        val image : ImageView = binding.albumImg
+    inner class SongViewHolder(binding: ItemSongsettingsBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        val title: TextView = binding.songTitle
+        val image: ImageView = binding.albumImg
 //        val view = binding
 
-        init{
-            binding.root.setOnClickListener{
+        init {
+            binding.root.setOnClickListener {
                 onSongClickListener(songs[adapterPosition])
             }
         }
@@ -30,7 +30,8 @@ class SettingsAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
-        val binding = ItemSongsettingsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemSongsettingsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return SongViewHolder(binding)
     }
 
@@ -44,9 +45,6 @@ class SettingsAdapter(
         holder.title.text = song.songTitle
         Glide.with(holder.image.context).load(song.album).into(holder.image)
     }
-
-
-
 
 
 }

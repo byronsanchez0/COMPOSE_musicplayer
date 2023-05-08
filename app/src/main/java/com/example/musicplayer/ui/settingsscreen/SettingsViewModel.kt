@@ -18,11 +18,11 @@ class SettingsViewModel(private val songRepository: SongRepository) : ViewModel(
         songsMutableLiveData.postValue(songs)
     }
 
-    fun addSongtoList(song: Song){
+    fun addSongToList(song: Song) {
         val success = songRepository.addNewSong(song)
-        if (success){
+        if (success) {
             messageMutableLiveData.postValue("This song has been added")
-        }else{
+        } else {
             messageMutableLiveData.postValue("This song is already been added")
         }
     }

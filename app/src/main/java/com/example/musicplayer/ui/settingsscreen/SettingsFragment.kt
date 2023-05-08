@@ -1,14 +1,13 @@
 package com.example.musicplayer.ui.settingsscreen
 
 import SettingsAdapter
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.musicplayer.R
@@ -34,7 +33,9 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         super.onViewCreated(view, savedInstanceState)
         startObservables()
         settingsViewModel.getAllSongs()
-
+        binding.goToMyListBtn.setOnClickListener{
+            findNavController().navigate(R.id.action_settingsFragment_to_listFragment)
+        }
     }
 
     private fun startObservables() {
@@ -60,7 +61,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
     private fun onSongClick(song: Song) {
-        settingsViewModel.addSongtoList(song)
+        settingsViewModel.addSongToList(song)
     }
 
 }

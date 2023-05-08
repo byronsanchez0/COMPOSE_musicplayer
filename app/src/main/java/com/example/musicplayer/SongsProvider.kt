@@ -30,6 +30,36 @@ class SongsProvider : ContentProvider() {
             SONG_NAME_FOUR,
             Uri.parse("${URI_PATH}${R.raw.cantholdus}"),
             Uri.parse("${URI_PATH}${R.drawable.cantholdus}")
+        ),
+        Song(
+            SONG_NAME_FIVE,
+            Uri.parse("${URI_PATH}${R.raw.darknecessities}"),
+            Uri.parse("${URI_PATH}${R.drawable.rhcp}")
+        ),
+        Song(
+            SONG_NAME_SIX,
+            Uri.parse("${URI_PATH}${R.raw.itwasagoodday}"),
+            Uri.parse("${URI_PATH}${R.drawable.itwasagoodday}")
+        ),
+        Song(
+            SONG_NAME_SEVEN,
+            Uri.parse("${URI_PATH}${R.raw.justonelastime}"),
+            Uri.parse("${URI_PATH}${R.drawable.davidguetta}")
+        ),
+        Song(
+            SONG_NAME_EIGHT,
+            Uri.parse("${URI_PATH}${R.raw.kyoto}"),
+            Uri.parse("${URI_PATH}${R.drawable.kyoto}")
+        ),
+        Song(
+            SONG_NAME_NINE,
+            Uri.parse("${URI_PATH}${R.raw.ridersonthestorm}"),
+            Uri.parse("${URI_PATH}${R.drawable.thedoors}")
+        ),
+        Song(
+            SONG_NAME_TEN,
+            Uri.parse("${URI_PATH}${R.raw.somewhereibelong}"),
+            Uri.parse("${URI_PATH}${R.drawable.linkinpark}")
         )
     )
 
@@ -94,10 +124,16 @@ class SongsProvider : ContentProvider() {
     }
 
     companion object {
-        const val SONG_NAME_ONE: String = "rhapsody dawn of fire"
-        const val SONG_NAME_TWO: String = "rufus de sol inner bloom"
-        const val SONG_NAME_THREE: String = "una troca"
+        const val SONG_NAME_ONE: String = "Rhapsody Dawn of fire"
+        const val SONG_NAME_TWO: String = "Rufus de Sol Inner Bloom"
+        const val SONG_NAME_THREE: String = "Una Troca"
         const val SONG_NAME_FOUR: String = "Can't hold us"
+        const val SONG_NAME_FIVE: String = "RHCP Dark Necessities"
+        const val SONG_NAME_SIX: String = "Ice Cube It was a good day"
+        const val SONG_NAME_SEVEN: String = "David Guetta Just One Last Time"
+        const val SONG_NAME_EIGHT: String = "Skrillex Kyoto"
+        const val SONG_NAME_NINE: String = "Linkin Park Somewhere I Belong"
+        const val SONG_NAME_TEN: String = "The Doors Riders on the Storm remix"
         private const val AUTHORITY = "com.example.musicplayer.provider"
         const val URI_PATH = "android.resource://com.example.musicplayer/"
         const val ID = "_id"

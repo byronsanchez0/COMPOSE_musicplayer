@@ -4,6 +4,15 @@
 
     <ConstraintSet android:id="@+id/start">
         <Constraint android:id="@+id/cardviewbutton" />
+        <Constraint
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:id="@+id/sc_player"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_editor_absoluteX="23dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardviewbutton" />
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">

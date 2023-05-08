@@ -18,15 +18,14 @@ class ListAdapter(
 ) : RecyclerView.Adapter<ListAdapter.SongViewHolder>() {
 
     inner class SongViewHolder(binding: ItemSongBinding) : RecyclerView.ViewHolder(binding.root) {
-        val title : TextView = binding.songTitle
-        val image : ImageView = binding.albumImg
-//        val view = binding
+        val title: TextView = binding.songTitle
+        val image: ImageView = binding.albumImg
 
-        init{
-            binding.root.setOnClickListener{
+        init {
+            binding.root.setOnClickListener {
                 onSongClickListener(adapterPosition)
             }
-            binding.deletebtn.setOnClickListener{
+            binding.deletebtn.setOnClickListener {
                 onDeleteListener(songs[adapterPosition])
             }
 
@@ -48,10 +47,7 @@ class ListAdapter(
         val song = songs[position]
         holder.title.text = song.songTitle
         Glide.with(holder.image.context).load(song.album).into(holder.image)
-        }
-
-
-
+    }
 
 
 }

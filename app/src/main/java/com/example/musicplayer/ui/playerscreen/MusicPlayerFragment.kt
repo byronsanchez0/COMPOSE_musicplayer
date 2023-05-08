@@ -1,5 +1,9 @@
 package com.example.musicplayer.ui.playerscreen
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -10,12 +14,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.lifecycle.Observer
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
 import com.example.musicplayer.R
 import com.example.musicplayer.databinding.FragmentMusicPlayerBinding
 import com.example.musicplayer.models.ManageSong
 import com.example.musicplayer.models.Player
+import com.example.musicplayer.models.Song
 import com.example.musicplayer.ui.listscreen.ListViewModel
+import com.example.musicplayer.ui.playerscreen.MusicPlayerViewModel.Companion.ALBUM_ART_URI
+import com.example.musicplayer.ui.playerscreen.MusicPlayerViewModel.Companion.SONG_TITLE
+import com.example.musicplayer.ui.playerscreen.MusicPlayerViewModel.Companion.SONG_URI
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MusicPlayerFragment : Fragment() {
@@ -64,6 +74,7 @@ class MusicPlayerFragment : Fragment() {
                     Player.mediaPlayer?.seekTo(progress)
                 }
             }
+
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
@@ -77,6 +88,29 @@ class MusicPlayerFragment : Fragment() {
             binding.playbtn.setImageResource(R.drawable.pausebtn)
             binding.seekbar.progress = 0
         }
+    }
+
+    private val songChangedReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent != null && intent.action == MusicPlayerViewModel.ACTION_SONG_CHANGED) {
+                val songTitle = intent.getStringExtra(SONG_TITLE) ?: ""
+                context?.let {
+                    Snackbar.make(binding.root, songTitle, Snackbar.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val filter = IntentFilter(MusicPlayerViewModel.ACTION_SONG_CHANGED)
+        LocalBroadcastManager.getInstance(requireContext())
+            .registerReceiver(songChangedReceiver, filter)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(songChangedReceiver)
     }
 
     private fun startObservables() {
@@ -93,67 +127,5 @@ class MusicPlayerFragment : Fragment() {
         }
     }
 
-//    private fun nextSong() {
-//        changeSong(ManageSong.Next)
-//    }
-//
-//    private fun previousSong() {
-//        changeSong(ManageSong.Previous)
-//    }
-//
-//    private fun changeSong(manageSong: ManageSong) {
-//        var nextSongId : Uri? = null
-//        var nextName = ""
-//        var nextAlbum : Uri? = null
-//        val currentSongs = Player.currentSongs
-//        currentSongs.forEachIndexed { i, song ->
-//            if (Player.currentId == song.id) {
-//                when (manageSong) {
-//                    ManageSong.Next -> {
-//                        var nextIndex = i + 1
-//                        if (nextIndex > currentSongs.size - 1) {
-//                            nextIndex = 0
-//                        }
-//                        nextSongId = currentSongs[nextIndex].id
-//                        nextName = currentSongs[nextIndex].songTitle
-//                        nextAlbum = currentSongs[nextIndex].album
-//                    }
-//                    ManageSong.Previous -> {
-//                        var previousIndex = i - 1
-//                        if (previousIndex < 0) {
-//                            previousIndex = Player.currentSongs.size - 1
-//                        }
-//                        nextSongId = currentSongs[previousIndex].id
-//                        nextName = currentSongs[previousIndex].songTitle
-//                        nextAlbum = currentSongs[previousIndex].album
-//                    }
-//                }
-//
-//            }
-//        }
-//        Player.currentId = nextSongId
-//        Player.currentName = nextName
-//        Player.currentAlbum = nextAlbum
-//        if (Player.mediaPlayer?.isPlaying == true) {
-//            Player.mediaPlayer?.stop()
-//        }
-//        Player.mediaPlayer?.reset()
-//        Player.mediaPlayer = MediaPlayer.create(requireContext(), nextSongId)
-//        Player.mediaPlayer?.start()
-//        binding.songTitle.text = nextName
-//        binding.albumPic.setImageURI(nextAlbum)
-//    }
-//
-//    private fun play() {
-//        Player.mediaPlayer?.apply {
-//            if (!isPlaying) {
-//                start()
-//                binding.playbtn.setImageResource(R.drawable.pausebtn)
-//            } else {
-//                pause()
-//                binding.playbtn.setImageResource(R.drawable.playbtn)
-//            }
-//        }
-//    }
 
 }
