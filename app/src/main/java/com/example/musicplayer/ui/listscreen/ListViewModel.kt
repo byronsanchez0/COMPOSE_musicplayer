@@ -14,6 +14,11 @@ class ListViewModel(private val repository: SongRepository) : ViewModel() {
         val repoSongs = repository.getDefaultSongs()
         songsMutableLiveData.postValue(repoSongs)
     }
+    fun deleteSongs(song: Song) {
+        repository.deleteSong(song)
+        val repoSongs = repository.getDefaultSongs()
+        songsMutableLiveData.postValue(repoSongs)
+    }
 }
 
 //

@@ -37,6 +37,10 @@ class ListFragment : Fragment(R.layout.fragment_song_list) {
         super.onViewCreated(view, savedInstanceState)
         startObservables()
         listViewModel.getSongs()
+        binding.goToSettingsbtn.setOnClickListener{
+            println("nosirve")
+            findNavController().navigate(R.id.action_listFragment_to_settingsFragment)
+        }
     }
 
     private fun startObservables() {
@@ -51,7 +55,7 @@ class ListFragment : Fragment(R.layout.fragment_song_list) {
         val layoutManager = LinearLayoutManager(context)
         binding.recyclerview.layoutManager = layoutManager
 
-        val adapter = ListAdapter(songs, this::onSongClick)
+        val adapter = ListAdapter(songs, this::onSongClick, this::deleteSong)
         binding.recyclerview.adapter = adapter
 
         val dividerItemDecoration = DividerItemDecoration(
@@ -61,12 +65,16 @@ class ListFragment : Fragment(R.layout.fragment_song_list) {
         binding.recyclerview.addItemDecoration(dividerItemDecoration)
     }
 
-    private fun onSongClick(position: Int) {
-        playSelectedSong(position)
-        navigateToDetailActivity()
+    private fun deleteSong(song: Song) {
+        listViewModel.deleteSongs(song)
     }
 
-    private fun navigateToDetailActivity() {
+    private fun onSongClick(position: Int) {
+        playSelectedSong(position)
+        navigateToPlayerFragment()
+    }
+
+    private fun navigateToPlayerFragment() {
         findNavController().navigate(R.id.action_listFragment_to_musicPlayerFragment)
     }
 
@@ -81,6 +89,19 @@ class ListFragment : Fragment(R.layout.fragment_song_list) {
         private fun playPlaylist() {
         if (songs.isNotEmpty()) {
             currentSongIndex = 0 // Always set the index to the first song
+            playSelectedSong(currentSongIndex)
+//            navigateToDetailActivity(currentSongIndex)
+        } else {
+            Toast.makeText(
+                context,
+                getString(R.string.no_songs_in_the_playlist),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+    private fun toggleRandomStart() {
+        if (songs.isNotEmpty()) {
+            currentSongIndex = (0 until songs.size).random()
             playSelectedSong(currentSongIndex)
 //            navigateToDetailActivity(currentSongIndex)
         } else {
@@ -188,19 +209,7 @@ class ListFragment : Fragment(R.layout.fragment_song_list) {
 //
 
 //
-//    private fun toggleRandomStart() {
-//        if (songs.isNotEmpty()) {
-//            currentSongIndex = (0 until songs.size).random()
-//            playSelectedSong(currentSongIndex)
-////            navigateToDetailActivity(currentSongIndex)
-//        } else {
-//            Toast.makeText(
-//                context,
-//                getString(R.string.no_songs_in_the_playlist),
-//                Toast.LENGTH_SHORT
-//            ).show()
-//        }
-//    }
+//
 //    private fun playSelectedSong(position: Int) {
 //        Player.mediaPlayer?.release()
 //        currentSongIndex = position

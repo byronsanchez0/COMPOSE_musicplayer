@@ -13,7 +13,8 @@ import com.example.musicplayer.models.Song
 
 class ListAdapter(
     private val songs: List<Song>,
-    private val onSongClickListener: (Int) -> Unit
+    private val onSongClickListener: (Int) -> Unit,
+    private val onDeleteListener: (Song) -> Unit
 ) : RecyclerView.Adapter<ListAdapter.SongViewHolder>() {
 
     inner class SongViewHolder(binding: ItemSongBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -25,6 +26,10 @@ class ListAdapter(
             binding.root.setOnClickListener{
                 onSongClickListener(adapterPosition)
             }
+            binding.deletebtn.setOnClickListener{
+                onDeleteListener(songs[adapterPosition])
+            }
+
         }
 
     }

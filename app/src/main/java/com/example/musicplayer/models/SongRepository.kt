@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.example.musicplayer.SongsProvider
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 private const val MY_SONGS = "my_songs"
 
@@ -52,8 +51,8 @@ class SongRepository(
             }
         } else {
             val mySongs = gson.fromJson(mySongsId, Array<String>::class.java).asList()
-            mySongs.forEach {idSong ->
-                allSongs.forEach {song ->
+            mySongs.forEach { idSong ->
+                allSongs.forEach { song ->
                     if (song.id.toString() == idSong) {
                         newList.add(song)
                     }
@@ -63,13 +62,14 @@ class SongRepository(
         return newList
     }
 
-    fun addNewSong(song: Song) {
+    fun addNewSong(song: Song): Boolean {
+
         val mySongsId = sharedPreferences.getString(MY_SONGS, null)
         val newListSongs = arrayListOf<String>()
         if (mySongsId != null) {
             val mySongs = gson.fromJson(mySongsId, Array<String>::class.java).asList()
-            mySongs.forEach {songId->
-                if (songId == song.id.toString()) return
+            mySongs.forEach { songId ->
+                if (songId == song.id.toString()) return false
                 newListSongs.add(songId)
             }
             newListSongs.add(song.id.toString())
@@ -80,11 +80,30 @@ class SongRepository(
             }
         }
         getDefaultSongs()
+        return true
     }
 
 
     fun getDefaultSongs(): List<Song> {
         getSongs()
         return songs
+    }
+
+    fun deleteSong(song: Song) {
+        val mySongsId = sharedPreferences.getString(MY_SONGS, null)
+        val myNewList = arrayListOf<String>()
+        if (mySongsId != null) {
+            val mySongs = gson.fromJson(mySongsId, Array<String>::class.java).asList()
+            mySongs.forEach { id ->
+                if (song.id.toString() != id) {
+                    myNewList.add(id)
+                }
+            }
+            val json = gson.toJson(myNewList)
+            sharedPreferences.edit().apply {
+                putString(MY_SONGS, json)
+                apply()
+            }
+        }
     }
 }

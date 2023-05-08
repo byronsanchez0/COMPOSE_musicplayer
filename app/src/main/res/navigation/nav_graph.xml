@@ -13,9 +13,21 @@
         <action
             android:id="@+id/action_listFragment_to_musicPlayerFragment"
             app:destination="@id/musicPlayerFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/musicPlayerFragment"
         android:name="com.example.musicplayer.ui.playerscreen.MusicPlayerFragment"
         android:label="MusicPlayerFragment" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.musicplayer.ui.settingsscreen.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+    </fragment>
 </navigation>

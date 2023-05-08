@@ -35,6 +35,12 @@
         android:layout_height="40dp"
         android:src="@drawable/playbtn"
         android:layout_margin="18dp"/>
+    <ImageView
+        android:id="@+id/deletebtn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/baseline_disabled_by_default_24"
+        android:layout_margin="18dp"/>
 
 
 </LinearLayout>
