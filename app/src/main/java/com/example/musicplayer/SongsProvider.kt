@@ -25,6 +25,11 @@ class SongsProvider : ContentProvider() {
             SONG_NAME_THREE,
             Uri.parse("${URI_PATH}${R.raw.unatroca}"),
             Uri.parse("${URI_PATH}${R.drawable.exterminador}")
+        ),
+        Song(
+            SONG_NAME_FOUR,
+            Uri.parse("${URI_PATH}${R.raw.cantholdus}"),
+            Uri.parse("${URI_PATH}${R.drawable.cantholdus}")
         )
     )
 
@@ -42,9 +47,9 @@ class SongsProvider : ContentProvider() {
         selectionArgs: Array<out String>?,
         sortOrder: String?
     ): Cursor? {
-        var matrixCursor = MatrixCursor(arrayOf(ID, SONG_NAME, SONG_URI, ALBUM_ART_URI, ALBUM_ART_URI))
-        songs.forEachIndexed{index, song ->
-            if(!_deletedSongs.contains(song.songTitle)){
+        var matrixCursor = MatrixCursor(arrayOf(ID, SONG_NAME, SONG_URI, ALBUM_ART_URI))
+        songs.forEachIndexed { index, song ->
+            if (!_deletedSongs.contains(song.songTitle)) {
                 matrixCursor.addRow(
                     arrayOf(
                         index,
@@ -63,7 +68,7 @@ class SongsProvider : ContentProvider() {
     }
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? {
-        if (values == null){
+        if (values == null) {
             throw IllegalArgumentException("ContentValues cannot be null")
         }
         val title = values.getAsString(SONG_NAME)
@@ -89,10 +94,11 @@ class SongsProvider : ContentProvider() {
     }
 
     companion object {
-        const val SONG_NAME_ONE: String = "Bar Liar"
-        const val SONG_NAME_TWO: String = "Girls Like You"
-        const val SONG_NAME_THREE: String = "See You Again"
-        private const val AUTHORITY = "com.example.music-player.provider"
+        const val SONG_NAME_ONE: String = "rhapsody dawn of fire"
+        const val SONG_NAME_TWO: String = "rufus de sol inner bloom"
+        const val SONG_NAME_THREE: String = "una troca"
+        const val SONG_NAME_FOUR: String = "Can't hold us"
+        private const val AUTHORITY = "com.example.musicplayer.provider"
         const val URI_PATH = "android.resource://com.example.musicplayer/"
         const val ID = "_id"
         const val SONG_NAME = "song_name"
@@ -111,14 +117,14 @@ class SongsProvider : ContentProvider() {
                 return emptyList()
             }
 
-//            while (cursor.moveToNext()) {
-//                val title = cursor.getString(nameColumnIndex)
-//                val songUri = Uri.parse(cursor.getString(songUriColumnIndex))
-//                val albumArtUri = Uri.parse(cursor.getString(albumArtUriColumnIndex))
-//
-//                val song = Song(title, songUri, albumArtUri)
-//                songs.add(song)
-//            }
+            while (cursor.moveToNext()) {
+                val title = cursor.getString(nameColumnIndex)
+                val songUri = Uri.parse(cursor.getString(songUriColumnIndex))
+                val albumArtUri = Uri.parse(cursor.getString(albumArtUriColumnIndex))
+
+                val song = Song(title, songUri, albumArtUri)
+                songs.add(song)
+            }
             return songs
         }
     }

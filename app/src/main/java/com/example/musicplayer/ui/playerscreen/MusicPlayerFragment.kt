@@ -1,27 +1,37 @@
-package com.example.musicplayer
+package com.example.musicplayer.ui.playerscreen
 
-import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.provider.MediaStore
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.SeekBar
-import com.example.musicplayer.databinding.ActivitySongListBinding
+import androidx.navigation.fragment.findNavController
+import com.example.musicplayer.R
+import com.example.musicplayer.databinding.FragmentMusicPlayerBinding
 import com.example.musicplayer.models.ManageSong
 import com.example.musicplayer.models.Player
 
-class MusicPlayer : AppCompatActivity() {
+class MusicPlayerFragment : Fragment() {
 
-    lateinit var binding : ActivitySongListBinding
+    private lateinit var binding: FragmentMusicPlayerBinding
     lateinit var runnable: Runnable
     val handler = Handler()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-         binding = ActivitySongListBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        binding = FragmentMusicPlayerBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         binding.playbtn.setImageResource(R.drawable.pausebtn)
         binding.seekbar.progress = 0
         binding.seekbar.max = Player.mediaPlayer?.duration!!
@@ -38,8 +48,7 @@ class MusicPlayer : AppCompatActivity() {
         }
 
         binding.songListbtn.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            this.startActivity(intent)
+            findNavController().popBackStack()
         }
         binding.songTitle.text = Player.currentName
         binding.albumPic.setImageURI(Player.currentAlbum)
@@ -64,8 +73,6 @@ class MusicPlayer : AppCompatActivity() {
             binding.playbtn.setImageResource(R.drawable.pausebtn)
             binding.seekbar.progress = 0
         }
-        //******SeekBar Management
-
     }
 
     private fun nextSong() {
@@ -113,7 +120,7 @@ class MusicPlayer : AppCompatActivity() {
             Player.mediaPlayer?.stop()
         }
         Player.mediaPlayer?.reset()
-        Player.mediaPlayer = MediaPlayer.create(this, nextSongId)
+        Player.mediaPlayer = MediaPlayer.create(requireContext(), nextSongId)
         Player.mediaPlayer?.start()
         binding.songTitle.text = nextName
         binding.albumPic.setImageURI(nextAlbum)
@@ -130,4 +137,5 @@ class MusicPlayer : AppCompatActivity() {
             }
         }
     }
+
 }

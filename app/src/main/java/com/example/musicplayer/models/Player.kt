@@ -1,11 +1,18 @@
 package com.example.musicplayer.models
 
 import android.media.MediaPlayer
+import android.net.Uri
 
 object Player {
     var mediaPlayer : MediaPlayer? = null
-    var currentSongs = arrayListOf<Song>()
+    var currentSongs = listOf<Song>()
     var currentName : String? = null
-    var currentId : Int = 0
-    var currentAlbum : Int = 0
+    var currentId : Uri? = null
+    var currentAlbum : Uri? = null
+
+    fun setCurrentSong(song: Song) {
+        this.currentId = song.id
+        this.currentName = song.songTitle
+        this.currentAlbum = song.album
+    }
 }

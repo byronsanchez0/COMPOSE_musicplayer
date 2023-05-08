@@ -58,7 +58,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
             this.startActivity(intent)
         }
         binding.songTitle.text = Player.currentName
-        binding.albumPic.setImageResource(Player.currentAlbum)
+        binding.albumPic.setImageURI(Player.currentAlbum)
 
         //********SeekBar Management
         binding.seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {

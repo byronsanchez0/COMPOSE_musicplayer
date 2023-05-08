@@ -1,9 +1,9 @@
-package com.example.musicplayer
+package com.example.musicplayer.models
 
 import android.net.Uri
 
 object SongContract {
-    private const val AUTHORITY = "com.example.music_player_mvvm.provider"
+    private const val AUTHORITY = "com.example.musicplayer.provider"
     private const val BASE_PATH = "songs"
     val CONTENT_URI: Uri = Uri.parse("content://$AUTHORITY/$BASE_PATH")
 
