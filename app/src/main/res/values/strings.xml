@@ -7,4 +7,6 @@
     <string name="playlist">Play</string>
     <string name="playrandom">Random</string>
     <string name="add_song">Add song</string>
+    <string name="album_descr">album cover</string>
+    <string name="mylist">My playlist</string>
 </resources>
