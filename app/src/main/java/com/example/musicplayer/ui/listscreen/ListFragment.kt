@@ -54,12 +54,23 @@ class ListFragment : Fragment(R.layout.fragment_song_list) {
 
         listViewModel.getSongs()
         val songs by listViewModel.songItems.collectAsState()
-        Scaffold (){paddingValues ->
+
+        Scaffold (
+            bottomBar = {
+                bottomButtons(
+                    playPlaylistClick = { playPlaylist() },
+                    playRandomClick = { toggleRandomStart() },
+                    goToSettingsClick = { navigateToSettingsFragment() }
+                )
+
+            }
+        ){paddingValues ->
             songList(
                 modifier = Modifier.padding(paddingValues),
-                songs = songs
-
+                songs = songs,
+                onSongClick = {song -> onSongClick(song)}
             )
+
         }
         // Inflate the layout for this fragment
 
@@ -85,31 +96,32 @@ class ListFragment : Fragment(R.layout.fragment_song_list) {
 
 //    private fun startObservables() {
 //        listViewModel.songs().observe(viewLifecycleOwner, Observer { songs ->
-//            Player.currentSongs = songs
-//            this.songs = songs
-//            setupRecyclerView(songs)
+////            Player.currentSongs = songs
+////            this.songs = songs
+////            setupRecyclerView(songs)
 //        })
 //    }
 
-    private fun setupRecyclerView(songs: List<Song>) {
-        val layoutManager = LinearLayoutManager(context)
-        binding.recyclerview.layoutManager = layoutManager
-
-        val adapter = ListAdapter(songs, this::onSongClick, this::deleteSong)
-        binding.recyclerview.adapter = adapter
-
-        val dividerItemDecoration = DividerItemDecoration(
-            binding.recyclerview.context,
-            layoutManager.orientation
-        )
-        binding.recyclerview.addItemDecoration(dividerItemDecoration)
-    }
+//    private fun setupRecyclerView(songs: List<Song>) {
+//        val layoutManager = LinearLayoutManager(context)
+//        binding.recyclerview.layoutManager = layoutManager
+//
+//        val adapter = ListAdapter(songs, this::onSongClick, this::deleteSong)
+//        binding.recyclerview.adapter = adapter
+//
+//        val dividerItemDecoration = DividerItemDecoration(
+//            binding.recyclerview.context,
+//            layoutManager.orientation
+//        )
+//        binding.recyclerview.addItemDecoration(dividerItemDecoration)
+//    }
 
     private fun deleteSong(song: Song) {
 //        listViewModel.deleteSongs(song)
     }
 
-    private fun onSongClick(position: Int) {
+    private fun onSongClick(song: Song) {
+        val position = listViewModel.onSongClick(song)
         playSelectedSong(position)
         navigateToPlayerFragment()
     }
@@ -117,16 +129,19 @@ class ListFragment : Fragment(R.layout.fragment_song_list) {
     private fun navigateToPlayerFragment() {
         findNavController().navigate(R.id.action_listFragment_to_musicPlayerFragment)
     }
+    private fun navigateToSettingsFragment() {
+        findNavController().navigate(R.id.action_listFragment_to_settingsFragment)
+    }
 
     private fun playSelectedSong(position: Int) {
-        Player.setCurrentSong(songs[position])
         Player.mediaPlayer?.release()
         currentSongIndex = position
-        Player.mediaPlayer = MediaPlayer.create(context, songs[position].id)
+        Player.mediaPlayer = MediaPlayer.create(context, listViewModel.songItems.value[position].id)
         Player.mediaPlayer?.start()
     }
 
     private fun playPlaylist() {
+        val songs = listViewModel.songItems.value
         if (songs.isNotEmpty()) {
             currentSongIndex = 0 // Always set the index to the first song
             playSelectedSong(currentSongIndex)
@@ -141,6 +156,7 @@ class ListFragment : Fragment(R.layout.fragment_song_list) {
     }
 
     private fun toggleRandomStart() {
+        val songs = listViewModel.songItems.value
         if (songs.isNotEmpty()) {
             currentSongIndex = (0 until songs.size).random()
             playSelectedSong(currentSongIndex)

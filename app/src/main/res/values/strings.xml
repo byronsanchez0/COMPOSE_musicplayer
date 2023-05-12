@@ -9,4 +9,7 @@
     <string name="add_song">Add song</string>
     <string name="album_descr">album cover</string>
     <string name="mylist">My playlist</string>
+    <string name="settings">settings\n</string>
+    <string name="start_playlist">Play\n</string>
+    <string name="random">Random</string>
 </resources>

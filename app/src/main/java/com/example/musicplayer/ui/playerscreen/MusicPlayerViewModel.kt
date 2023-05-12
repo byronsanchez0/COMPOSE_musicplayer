@@ -12,15 +12,21 @@ import com.example.musicplayer.R
 import com.example.musicplayer.models.ManageSong
 import com.example.musicplayer.models.Player
 import com.example.musicplayer.models.Song
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class MusicPlayerViewModel(private val context: Context) : ViewModel() {
-    private val titleMutableLiveData = MutableLiveData<String>()
-    private val albumMutableLiveData = MutableLiveData<Uri>()
-    private val playBtnLiveData = MutableLiveData<Int>()
+//    private val songsMutableStateFlow = MutableStateFlow(listOf<Song>())
+    private val title : String = ""
+    private val titleMutableStateFlow = MutableStateFlow(title)
+    private val uri: Uri? = null
+    private val albumMutableStateFlow = MutableStateFlow(uri)
 
-    fun title(): LiveData<String> = titleMutableLiveData
-    fun album(): LiveData<Uri> = albumMutableLiveData
-    fun playBtn(): LiveData<Int> = playBtnLiveData
+    private val playBtnStateFlow = MutableStateFlow(0)
+
+    fun title(): MutableStateFlow<String>  = titleMutableStateFlow
+    fun album(): MutableStateFlow<Uri?> = albumMutableStateFlow
+    fun playBtn(): MutableStateFlow<Int> = playBtnStateFlow
 
     fun nextSong() {
         changeSong(ManageSong.Next)
@@ -72,9 +78,9 @@ class MusicPlayerViewModel(private val context: Context) : ViewModel() {
         Player.mediaPlayer?.reset()
         Player.mediaPlayer = MediaPlayer.create(context, nextSongId)
         Player.mediaPlayer?.start()
-        titleMutableLiveData.postValue(nextName)
+        titleMutableStateFlow.tryEmit(nextName)
         nextAlbum?.let { album ->
-            albumMutableLiveData.postValue(album)
+            albumMutableStateFlow.tryEmit(album)
             nextSongId?.let { id ->
                 sendSongChangedBroadcast(Song(nextName, id, album))
             }
@@ -94,10 +100,10 @@ class MusicPlayerViewModel(private val context: Context) : ViewModel() {
         Player.mediaPlayer?.apply {
             if (!isPlaying) {
                 start()
-                playBtnLiveData.postValue(R.drawable.pausebtn)
+                playBtnStateFlow.tryEmit(R.drawable.pausebtn)
             } else {
                 pause()
-                playBtnLiveData.postValue(R.drawable.playbtn)
+                playBtnStateFlow.tryEmit(R.drawable.playbtn)
             }
         }
     }

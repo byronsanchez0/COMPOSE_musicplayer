@@ -30,6 +30,11 @@ class ListViewModel(private val repository: SongRepository) : ViewModel() {
         }
     }
 
+    fun onSongClick(song: Song): Int {
+        return songItems.value.indexOf(song)
+    }
+
+
 //    fun getSongs() {
 //        val repoSongs = repository.getDefaultSongs()
 //        songsMutableStateFlow.postValue(repoSongs)
