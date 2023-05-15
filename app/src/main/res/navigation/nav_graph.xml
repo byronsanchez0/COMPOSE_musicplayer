@@ -20,7 +20,11 @@
     <fragment
         android:id="@+id/musicPlayerFragment"
         android:name="com.example.musicplayer.ui.playerscreen.MusicPlayerFragment"
-        android:label="MusicPlayerFragment" />
+        android:label="MusicPlayerFragment" >
+        <action
+            android:id="@+id/action_musicPlayerFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.musicplayer.ui.settingsscreen.SettingsFragment"

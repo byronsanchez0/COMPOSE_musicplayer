@@ -6,21 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -28,9 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.musicplayer.R
 import com.example.musicplayer.composeView
@@ -47,6 +40,7 @@ class ListFragment : Fragment(R.layout.fragment_song_list) {
     private var currentSongIndex: Int = 0
     private var songs: List<Song> = listOf()
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,7 +48,7 @@ class ListFragment : Fragment(R.layout.fragment_song_list) {
 
         listViewModel.getSongs()
         val songs by listViewModel.songItems.collectAsState()
-
+        Player.currentSongs = songs
         Scaffold (
             bottomBar = {
                 bottomButtons(
@@ -62,18 +56,14 @@ class ListFragment : Fragment(R.layout.fragment_song_list) {
                     playRandomClick = { toggleRandomStart() },
                     goToSettingsClick = { navigateToSettingsFragment() }
                 )
-
             }
-        ){paddingValues ->
+        ){ shit ->
             songList(
-                modifier = Modifier.padding(paddingValues),
-                songs = songs,
-                onSongClick = {song -> onSongClick(song)}
-            )
+                paddingValues = shit,
+                songs = songs
+            ) { song -> onSongClick(song) }
 
         }
-        // Inflate the layout for this fragment
-
     }
 
 
@@ -138,6 +128,7 @@ class ListFragment : Fragment(R.layout.fragment_song_list) {
         currentSongIndex = position
         Player.mediaPlayer = MediaPlayer.create(context, listViewModel.songItems.value[position].id)
         Player.mediaPlayer?.start()
+        Player.setCurrentSong(listViewModel.songItems.value[position])
     }
 
     private fun playPlaylist() {

@@ -4,89 +4,69 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.media.MediaPlayer
-import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
-import androidx.lifecycle.Observer
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Snackbar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
 import com.example.musicplayer.R
-import com.example.musicplayer.databinding.FragmentMusicPlayerBinding
-import com.example.musicplayer.models.ManageSong
-import com.example.musicplayer.models.Player
-import com.example.musicplayer.models.Song
-import com.example.musicplayer.ui.listscreen.ListViewModel
-import com.example.musicplayer.ui.playerscreen.MusicPlayerViewModel.Companion.ALBUM_ART_URI
+import com.example.musicplayer.composeView
 import com.example.musicplayer.ui.playerscreen.MusicPlayerViewModel.Companion.SONG_TITLE
-import com.example.musicplayer.ui.playerscreen.MusicPlayerViewModel.Companion.SONG_URI
-import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MusicPlayerFragment : Fragment() {
     private val musicPlayerViewModel: MusicPlayerViewModel by viewModel()
-    private lateinit var binding: FragmentMusicPlayerBinding
-    lateinit var runnable: Runnable
-    val handler = Handler()
+    lateinit var snackbarHostState: SnackbarHostState
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        binding = FragmentMusicPlayerBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    ): View = composeView {
+        val title by musicPlayerViewModel.title.collectAsState()
+        val album by musicPlayerViewModel.album.collectAsState()
+        val sliderPosition by musicPlayerViewModel.sliderPosition.collectAsState()
+        snackbarHostState = remember { SnackbarHostState() }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        startObservables()
-        binding.playbtn.setImageResource(R.drawable.pausebtn)
-        binding.seekbar.progress = 0
-        binding.seekbar.max = Player.mediaPlayer?.duration!!
-
-        binding.playbtn.setOnClickListener {
-            musicPlayerViewModel.play()
-        }
-
-        binding.nextbtn.setOnClickListener {
-            musicPlayerViewModel.nextSong()
-        }
-        binding.previousbtn.setOnClickListener {
-            musicPlayerViewModel.previousSong()
-        }
-
-        binding.songListbtn.setOnClickListener {
-            findNavController().popBackStack()
-        }
-        binding.songTitle.text = Player.currentName
-        binding.albumPic.setImageURI(Player.currentAlbum)
-
-        //********SeekBar Management
-        binding.seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, change: Boolean) {
-                if (change) {
-                    Player.mediaPlayer?.seekTo(progress)
+        Scaffold { shit ->
+            Column(Modifier.padding(shit)) {
+                SnackbarHost(hostState = snackbarHostState) { data ->
+                    Snackbar {
+                        Text(text = data.visuals.message)
+                    }
                 }
+                musicPlayer(
+                    title = title ?: "",
+                    albumId = album,
+                    myListBtn = { goToMyList() }
+                )
+                playerButtons(
+                    musicPlayerViewModel
+                )
+                Slider(
+                    value = sliderPosition,
+                    onValueChange = { position ->
+                        musicPlayerViewModel.sliderPositionChanged(position)
+                    },
+                )
             }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
-        runnable = Runnable {
-            binding.seekbar.progress = Player.mediaPlayer?.currentPosition ?: 0
-            handler.postDelayed(runnable, 1000)
-        }
-        handler.postDelayed(runnable, 1000)
-
-        Player.mediaPlayer?.setOnCompletionListener {
-            binding.playbtn.setImageResource(R.drawable.pausebtn)
-            binding.seekbar.progress = 0
         }
     }
 
@@ -94,9 +74,10 @@ class MusicPlayerFragment : Fragment() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent != null && intent.action == MusicPlayerViewModel.ACTION_SONG_CHANGED) {
                 val songTitle = intent.getStringExtra(SONG_TITLE) ?: ""
-                context?.let {
-                    Snackbar.make(binding.root, songTitle, Snackbar.LENGTH_SHORT).show()
+                lifecycleScope.launch {
+                    snackbarHostState.showSnackbar(songTitle)
                 }
+
             }
         }
     }
@@ -113,19 +94,7 @@ class MusicPlayerFragment : Fragment() {
         LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(songChangedReceiver)
     }
 
-    private fun startObservables() {
-        musicPlayerViewModel.apply {
-            title().observe(viewLifecycleOwner, Observer {
-                binding.songTitle.text = it
-            })
-            album().observe(viewLifecycleOwner, Observer {
-                binding.albumPic.setImageURI(it)
-            })
-            playBtn().observe(viewLifecycleOwner, Observer {
-                binding.playbtn.setImageResource(it)
-            })
-        }
+    private fun goToMyList() {
+        findNavController().navigate(R.id.action_musicPlayerFragment_to_listFragment)
     }
-
-
 }

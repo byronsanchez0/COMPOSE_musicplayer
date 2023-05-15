@@ -4,29 +4,64 @@ import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.os.Handler
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PauseCircle
+import androidx.compose.material.icons.filled.PlayCircle
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.example.musicplayer.R
 import com.example.musicplayer.models.ManageSong
 import com.example.musicplayer.models.Player
 import com.example.musicplayer.models.Song
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class MusicPlayerViewModel(private val context: Context) : ViewModel() {
-//    private val songsMutableStateFlow = MutableStateFlow(listOf<Song>())
-    private val title : String = ""
-    private val titleMutableStateFlow = MutableStateFlow(title)
-    private val uri: Uri? = null
-    private val albumMutableStateFlow = MutableStateFlow(uri)
+    private val titleMutableStateFlow = MutableStateFlow<String?>(null)
+    private val albumMutableStateFlow = MutableStateFlow<Uri?>(null)
+    private val playBtnStateFlow = MutableStateFlow<ImageVector>(Icons.Filled.PauseCircle)
+    private val sliderPositionSateFlow = MutableStateFlow<Float>(0f)
+    lateinit var runnable: Runnable
+    val handler = Handler()
 
-    private val playBtnStateFlow = MutableStateFlow(0)
 
-    fun title(): MutableStateFlow<String>  = titleMutableStateFlow
-    fun album(): MutableStateFlow<Uri?> = albumMutableStateFlow
-    fun playBtn(): MutableStateFlow<Int> = playBtnStateFlow
+    init {
+        runnable = Runnable {
+            Player.mediaPlayer?.let {mediaPlayer ->
+                val currentPosition = mediaPlayer.currentPosition.toFloat()
+                val duration = mediaPlayer.duration.toFloat()
+                val progress = currentPosition / duration
+                viewModelScope.launch {
+                    sliderPositionSateFlow.emit(progress)
+                }
+            }
+
+//            binding.seekbar.progress = Player.mediaPlayer?.currentPosition ?: 0
+            handler.postDelayed(runnable, 1000)
+        }
+        handler.postDelayed(runnable, 1000)
+        viewModelScope.launch {
+            titleMutableStateFlow.emit(Player.currentName)
+            albumMutableStateFlow.emit(Player.currentAlbum)
+        }
+    }
+
+    val title: MutableStateFlow<String?> get() = titleMutableStateFlow
+    val album: MutableStateFlow<Uri?> get() = albumMutableStateFlow
+    val playBtn: MutableStateFlow<ImageVector> get() = playBtnStateFlow
+
+    val sliderPosition: MutableStateFlow<Float> get() = sliderPositionSateFlow
+
+
+    fun sliderPositionChanged(newSliderPosition: Float) {
+        Player.mediaPlayer?.let { mediaPlayer ->
+            val newPosition = (newSliderPosition * mediaPlayer.duration).toInt()
+            mediaPlayer.seekTo(newPosition)
+        }
+    }
 
     fun nextSong() {
         changeSong(ManageSong.Next)
@@ -100,10 +135,16 @@ class MusicPlayerViewModel(private val context: Context) : ViewModel() {
         Player.mediaPlayer?.apply {
             if (!isPlaying) {
                 start()
-                playBtnStateFlow.tryEmit(R.drawable.pausebtn)
+                viewModelScope.launch {
+                    playBtnStateFlow.emit(Icons.Filled.PauseCircle)
+                }
+
+
             } else {
                 pause()
-                playBtnStateFlow.tryEmit(R.drawable.playbtn)
+                viewModelScope.launch {
+                    playBtnStateFlow.emit(Icons.Filled.PlayCircle)
+                }
             }
         }
     }
