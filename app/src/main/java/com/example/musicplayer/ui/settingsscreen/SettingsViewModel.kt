@@ -13,13 +13,13 @@ import kotlinx.coroutines.launch
 
 class SettingsViewModel(private val songRepository: SongRepository) : ViewModel() {
 
-    private val messageMutableLiveData = MutableLiveData<String>()
+    private val msgMutableStateFlow = MutableStateFlow<String?>(null)
     private val songsMutableStateFlow = MutableStateFlow(listOf<Song>())
 
     //        MutableLiveData<List<Song>>()
 //    fun songs(): StateFlow<List<Song>> = songsMutableStateFlow
     val allSongs: StateFlow<List<Song>> get() = songsMutableStateFlow.asStateFlow()
-    fun message(): LiveData<String> = messageMutableLiveData
+    fun message(): StateFlow<String?> = msgMutableStateFlow
 
     fun getAllSongs() {
         val songs = songRepository.getAllSongs()
@@ -30,10 +30,13 @@ class SettingsViewModel(private val songRepository: SongRepository) : ViewModel(
 
     fun addSongToList(song: Song) {
         val success = songRepository.addNewSong(song)
-        if (success) {
-            messageMutableLiveData.postValue("This song has been added")
-        } else {
-            messageMutableLiveData.postValue("This song is already been added")
-        }
+//        viewModelScope.launch {
+//            if (success) {
+//                msgMutableStateFlow.emit("This song has been added")
+//            } else {
+//                msgMutableStateFlow.emit("This song is already been added")
+//            }
+//        }
+
     }
 }

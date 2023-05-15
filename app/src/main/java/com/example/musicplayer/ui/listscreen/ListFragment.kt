@@ -30,10 +30,12 @@ import com.example.musicplayer.composeView
 import com.example.musicplayer.databinding.FragmentSongListBinding
 import com.example.musicplayer.models.Player
 import com.example.musicplayer.models.Song
+import com.example.myapplicationaaaaaaaa.ui.theme.MyApplicationTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class ListFragment : Fragment(R.layout.fragment_song_list) {
+
     private lateinit var binding: FragmentSongListBinding
     private val listViewModel: ListViewModel by viewModel()
 
@@ -49,21 +51,26 @@ class ListFragment : Fragment(R.layout.fragment_song_list) {
         listViewModel.getSongs()
         val songs by listViewModel.songItems.collectAsState()
         Player.currentSongs = songs
-        Scaffold (
-            bottomBar = {
-                bottomButtons(
-                    playPlaylistClick = { playPlaylist() },
-                    playRandomClick = { toggleRandomStart() },
-                    goToSettingsClick = { navigateToSettingsFragment() }
-                )
-            }
-        ){ shit ->
-            songList(
-                paddingValues = shit,
-                songs = songs
-            ) { song -> onSongClick(song) }
+        MyApplicationTheme {
+            Scaffold (
+                bottomBar = {
+                    bottomButtons(
+                        playPlaylistClick = { playPlaylist() },
+                        playRandomClick = { toggleRandomStart() },
+                        goToSettingsClick = { navigateToSettingsFragment() }
+                    )
+                }
+            ){ shit ->
+                songList(
+                    paddingValues = shit,
+                    songs = songs,
+                    deleteSong = listViewModel::deleteSongs,
+                    onRefresh = { listViewModel.refreshSongs() },
+                ) { song -> onSongClick(song) }
 
+            }
         }
+
     }
 
 
@@ -107,7 +114,7 @@ class ListFragment : Fragment(R.layout.fragment_song_list) {
 //    }
 
     private fun deleteSong(song: Song) {
-//        listViewModel.deleteSongs(song)
+        listViewModel.deleteSongs(song)
     }
 
     private fun onSongClick(song: Song) {

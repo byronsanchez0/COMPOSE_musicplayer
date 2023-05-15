@@ -39,7 +39,7 @@ class SongRepository(
         val mySongsId = sharedPreferences.getString(MY_SONGS, null)
         if (mySongsId == null) {
             sharedPreferences.edit().apply {
-                val defaultSongs = allSongs.take(2)
+                val defaultSongs = allSongs.take(3)
                 val defaultSongsId = arrayListOf<String>()
                 defaultSongs.forEach {
                     defaultSongsId.add(it.id.toString())
