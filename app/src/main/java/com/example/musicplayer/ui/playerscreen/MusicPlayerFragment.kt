@@ -8,18 +8,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.SliderColors
 import androidx.compose.material.Snackbar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -45,10 +54,19 @@ class MusicPlayerFragment : Fragment() {
         val sliderPosition by musicPlayerViewModel.sliderPosition.collectAsState()
         snackbarHostState = remember { SnackbarHostState() }
 
-        Scaffold { shit ->
-            Column(Modifier.padding(shit)) {
-                SnackbarHost(hostState = snackbarHostState) { data ->
-                    Snackbar {
+        Scaffold(
+            containerColor = MaterialTheme.colorScheme.onBackground
+        ) { pad ->
+            Column(
+                Modifier
+                    .padding(pad),
+                verticalArrangement = Arrangement.Center
+            ) {
+                SnackbarHost(
+                    hostState = snackbarHostState
+                ) { data ->
+                    Snackbar(
+                        backgroundColor = MaterialTheme.colorScheme.onTertiary) {
                         Text(text = data.visuals.message)
                     }
                 }
@@ -57,15 +75,23 @@ class MusicPlayerFragment : Fragment() {
                     albumId = album,
                     myListBtn = { goToMyList() }
                 )
-                playerButtons(
-                    musicPlayerViewModel
-                )
                 Slider(
+                    colors = SliderDefaults.colors(
+                        thumbColor = MaterialTheme.colorScheme.onSecondary,
+                        activeTrackColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        inactiveTrackColor = MaterialTheme.colorScheme.tertiary,
+                        activeTickColor = MaterialTheme.colorScheme.secondary,
+                        inactiveTickColor = MaterialTheme.colorScheme.tertiary
+                    ),
                     value = sliderPosition,
                     onValueChange = { position ->
                         musicPlayerViewModel.sliderPositionChanged(position)
                     },
                 )
+                playerButtons(
+                    musicPlayerViewModel
+                )
+
             }
         }
     }

@@ -57,7 +57,7 @@ private val LightColorScheme = lightColorScheme(
     onSecondary = Color(0xFFFFFFFF),
     secondaryContainer = Color(0xFF97F0FF),
     onSecondaryContainer = Color(0xFF001F24),
-    tertiary = Color(0xFF006497),
+    tertiary = Color(0xC9006497),
     onTertiary = Color(0xFFFFFFFF),
     tertiaryContainer = Color(0xFFCCE5FF),
     onTertiaryContainer = Color(0xFF001E31),
@@ -103,7 +103,7 @@ fun MyApplicationTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
+            window.statusBarColor = colorScheme.onBackground.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }

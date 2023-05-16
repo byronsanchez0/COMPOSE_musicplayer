@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import com.example.musicplayer.SongsProvider
 import com.google.gson.Gson
 
-private const val MY_SONGS = "my_songs"
+ const val MY_SONGS = "my_songs"
 
 class SongRepository(
     private val context: Context,
@@ -13,6 +13,29 @@ class SongRepository(
     private val gson: Gson
 ) {
     var songs: List<Song> = listOf()
+
+    fun refreshSongs(): List<Song>{
+        var newList = arrayListOf<Song>()
+        val contentResolver = context.contentResolver
+        val cursor =
+            contentResolver.query(SongsProvider.SONG_PROVIDER_URI, null, null, null, null)
+        if (cursor != null) {
+            val allSongs = SongsProvider.getSongsFromCursor(cursor)
+            sharedPreferences.edit().apply {
+                val defaultSongs = allSongs.take(3)
+                val defaultSongsId = arrayListOf<String>()
+                defaultSongs.forEach {
+                    defaultSongsId.add(it.id.toString())
+                }
+                val json = gson.toJson(defaultSongsId)
+                putString(MY_SONGS, json)
+                apply()
+                defaultSongs.forEach { newList.add(it) }
+            }
+            cursor.close()
+        }
+        return newList
+    }
 
     private fun getSongs() {
         val contentResolver = context.contentResolver

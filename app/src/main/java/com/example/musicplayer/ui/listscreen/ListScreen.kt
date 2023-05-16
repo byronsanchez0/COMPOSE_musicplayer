@@ -1,6 +1,7 @@
 package com.example.musicplayer.ui.listscreen
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,9 +26,11 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Shuffle
+import androidx.compose.material.icons.filled.ShuffleOn
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -44,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
@@ -58,7 +62,7 @@ import kotlinx.coroutines.launch
 fun songList(
     deleteSong: (Song) -> Unit,
     paddingValues: PaddingValues,
-    onRefresh: suspend() -> Unit,
+    onRefresh: suspend () -> Unit,
     songs: List<Song>,
     onSongClick: (Song) -> Unit
 ) {
@@ -76,18 +80,19 @@ fun songList(
 
     val state = rememberPullRefreshState(refreshing, ::refresh)
 
-
     Box(
-        Modifier.pullRefresh(state)
+        Modifier
+            .pullRefresh(state)
+            .background(MaterialTheme.colorScheme.onBackground)
+
     ) {
         LazyColumn() {
-            if(!refreshing){
+            if (!refreshing) {
                 items(songs) { song ->
                     itemSong(
                         song,
                         onSongClick,
                         deleteBtn = { deleteSong(song) })
-                    Divider()
                 }
             }
 
@@ -112,39 +117,39 @@ fun itemSong(
             .padding(8.dp)
             .border(
                 border = ButtonDefaults.outlinedBorder,
-                shape = RoundedCornerShape(4.dp)
+                shape = RoundedCornerShape(4.dp),
             )
+            .background(MaterialTheme.colorScheme.secondary)
     ) {
         Image(
             painter = rememberAsyncImagePainter(model = song.album),
             contentDescription = stringResource(R.string.album_descr),
             modifier = Modifier
-                .size(60.dp)
+                .size(65.dp)
                 .clip(RoundedCornerShape(4.dp))
         )
         Spacer(modifier = Modifier.width(2.dp))
         Text(
             song.songTitle,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.bodyLarge.copy(fontStyle = FontStyle.Italic),
+            color = MaterialTheme.colorScheme.inverseOnSurface,
             modifier = Modifier
-                .padding(end = 15.dp, top = 12.dp)
+                .padding(top = 20.dp),
 
-        )
+
+            )
         Spacer(modifier = Modifier.width(8.dp))
-        IconButton(onClick = deleteBtn,
-//            modifier = Modifier.align(Alignment.End)
+        IconButton(
+            onClick = deleteBtn,
         ) {
             Icon(
                 Icons.Filled.DeleteForever,
                 contentDescription = stringResource(R.string.deleteSongFromPlaylist),
                 modifier = Modifier
-                    .size(40.dp),
-
-
+                    .size(40.dp)
+                    .padding(end = 3.dp, top = 7.dp),
                 tint = MaterialTheme.colorScheme.inversePrimary
             )
-
         }
     }
 
@@ -158,12 +163,19 @@ fun bottomButtons(
     modifier: Modifier = Modifier
 
 ) {
-    BottomAppBar(modifier = modifier) {
+    BottomAppBar(
+        backgroundColor = MaterialTheme.colorScheme.tertiary,
+        modifier = modifier
+    ) {
         IconButton(onClick = playPlaylistClick) {
             Icon(
                 Icons.Filled.PlayCircle,
                 contentDescription = stringResource(R.string.start_playlist),
-//                tint = MaterialTheme.
+                tint = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier
+                    .size(70.dp)
+                    .padding(start = 25.dp)
+
 
             )
         }
@@ -172,10 +184,12 @@ fun bottomButtons(
             onClick = playRandomClick
         ) {
             Icon(
-                Icons.Filled.Shuffle,
-                contentDescription = stringResource(R.string.random),
-//                tint = MaterialTheme.colors.primary
-
+                Icons.Filled.ShuffleOn,
+                modifier = Modifier
+                    .size(46.dp)
+                    .padding(vertical = 3.dp),
+                tint = MaterialTheme.colorScheme.onPrimary,
+                contentDescription = stringResource(R.string.random)
             )
         }
         Spacer(modifier = Modifier.weight(1f))
@@ -184,9 +198,12 @@ fun bottomButtons(
             onClick = goToSettingsClick,
         ) {
             Icon(
-                Icons.Filled.Settings,//ADD TYPE
-                contentDescription = stringResource(R.string.settings),
-//                tint = MaterialTheme.colors.primary
+                Icons.Filled.LibraryMusic,//ADD TYPE
+                modifier = Modifier
+                    .size(70.dp)
+                    .padding(end = 25.dp),
+                tint = MaterialTheme.colorScheme.onPrimary,
+                contentDescription = stringResource(R.string.settings)
             )
         }
     }

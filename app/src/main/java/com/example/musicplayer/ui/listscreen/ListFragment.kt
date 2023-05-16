@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -36,11 +38,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ListFragment : Fragment(R.layout.fragment_song_list) {
 
-    private lateinit var binding: FragmentSongListBinding
     private val listViewModel: ListViewModel by viewModel()
-
     private var currentSongIndex: Int = 0
-    private var songs: List<Song> = listOf()
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreateView(
@@ -51,8 +50,9 @@ class ListFragment : Fragment(R.layout.fragment_song_list) {
         listViewModel.getSongs()
         val songs by listViewModel.songItems.collectAsState()
         Player.currentSongs = songs
-        MyApplicationTheme {
-            Scaffold (
+        MyApplicationTheme() {
+            Scaffold(
+                containerColor = MaterialTheme.colorScheme.onBackground,
                 bottomBar = {
                     bottomButtons(
                         playPlaylistClick = { playPlaylist() },
@@ -60,9 +60,9 @@ class ListFragment : Fragment(R.layout.fragment_song_list) {
                         goToSettingsClick = { navigateToSettingsFragment() }
                     )
                 }
-            ){ shit ->
+            ) { pad ->
                 songList(
-                    paddingValues = shit,
+                    paddingValues = pad,
                     songs = songs,
                     deleteSong = listViewModel::deleteSongs,
                     onRefresh = { listViewModel.refreshSongs() },
@@ -71,50 +71,6 @@ class ListFragment : Fragment(R.layout.fragment_song_list) {
             }
         }
 
-    }
-
-
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-//        startObservables()
-//        listViewModel.getSongs()
-//        binding.goToSettingsbtn.setOnClickListener {
-//            findNavController().navigate(R.id.action_listFragment_to_settingsFragment)
-//        }
-//        binding.playInorderButton.setOnClickListener {
-//            playPlaylist()
-//        }
-//        binding.playRandomButton.setOnClickListener {
-//            toggleRandomStart()
-//        }
-    }
-
-//    private fun startObservables() {
-//        listViewModel.songs().observe(viewLifecycleOwner, Observer { songs ->
-////            Player.currentSongs = songs
-////            this.songs = songs
-////            setupRecyclerView(songs)
-//        })
-//    }
-
-//    private fun setupRecyclerView(songs: List<Song>) {
-//        val layoutManager = LinearLayoutManager(context)
-//        binding.recyclerview.layoutManager = layoutManager
-//
-//        val adapter = ListAdapter(songs, this::onSongClick, this::deleteSong)
-//        binding.recyclerview.adapter = adapter
-//
-//        val dividerItemDecoration = DividerItemDecoration(
-//            binding.recyclerview.context,
-//            layoutManager.orientation
-//        )
-//        binding.recyclerview.addItemDecoration(dividerItemDecoration)
-//    }
-
-    private fun deleteSong(song: Song) {
-        listViewModel.deleteSongs(song)
     }
 
     private fun onSongClick(song: Song) {
@@ -126,6 +82,7 @@ class ListFragment : Fragment(R.layout.fragment_song_list) {
     private fun navigateToPlayerFragment() {
         findNavController().navigate(R.id.action_listFragment_to_musicPlayerFragment)
     }
+
     private fun navigateToSettingsFragment() {
         findNavController().navigate(R.id.action_listFragment_to_settingsFragment)
     }

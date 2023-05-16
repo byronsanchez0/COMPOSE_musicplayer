@@ -30,7 +30,7 @@ class MusicPlayerViewModel(private val context: Context) : ViewModel() {
 
     init {
         runnable = Runnable {
-            Player.mediaPlayer?.let {mediaPlayer ->
+            Player.mediaPlayer?.let { mediaPlayer ->
                 val currentPosition = mediaPlayer.currentPosition.toFloat()
                 val duration = mediaPlayer.duration.toFloat()
                 val progress = currentPosition / duration

@@ -20,10 +20,10 @@ private val NotoSerif = FontFamily(
 val Typography = Typography(
     bodyLarge = TextStyle(
         fontFamily = NotoSerif,
-        fontWeight = FontWeight.Normal,
-        fontSize = 18.sp,
-        lineHeight = 22.sp,
-        letterSpacing = 0.5.sp,
+        fontWeight = FontWeight.Black,
+        fontSize = 16.sp,
+        lineHeight = 19.sp,
+        letterSpacing = 0.3.sp,
     ),
     titleLarge = TextStyle(
         fontFamily = NotoSerif,
@@ -32,14 +32,13 @@ val Typography = Typography(
         lineHeight = 28.sp,
         letterSpacing = 0.sp
     )
-/*
-labelSmall = TextStyle(
-fontFamily = FontFamily.Default,
-fontWeight = FontWeight.Medium,
-fontSize = 11.sp,
-lineHeight = 16.sp,
-letterSpacing = 0.5.sp
-)
-*/
+    ,
+    bodyMedium = TextStyle(
+        fontFamily = NotoSerif,
+        fontWeight = FontWeight.Normal,
+        fontSize = 18.sp,
+        lineHeight = 17.sp,
+        letterSpacing = 0.sp
+    )
 )
 
