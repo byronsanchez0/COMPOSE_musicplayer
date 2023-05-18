@@ -60,7 +60,7 @@ class SongRepository(
     private fun verifyMySong(allSongs: List<Song>): List<Song> {
         var newList = arrayListOf<Song>()
         val mySongsId = sharedPreferences.getString(MY_SONGS, null)
-        if (mySongsId == null) {
+        if (mySongsId == null || mySongsId == "") {
             sharedPreferences.edit().apply {
                 val defaultSongs = allSongs.take(3)
                 val defaultSongsId = arrayListOf<String>()

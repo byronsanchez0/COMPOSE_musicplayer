@@ -12,9 +12,7 @@ inline fun Fragment.composeView(
     return ComposeView(requireContext()).apply {
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
         setContent {
-//            MyApplicationTheme {
                 content()
-//            }
         }
     }
 }
